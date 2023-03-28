@@ -7,8 +7,6 @@ const {
   invalidPathError,
 } = require(`${__dirname}/controllers/errorHandling.controller`);
 
-app.use(express.json());
-
 app.get("/api", (req, res) => {
   res.status(200).send({ msg: "All good!" });
 });
