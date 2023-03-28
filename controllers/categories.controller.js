@@ -4,8 +4,8 @@ const {
 
 exports.getCategories = (req, res, next) => {
   fetchCategories()
-    .then((category) => {
-      res.status(200).send({ categories: category });
+    .then((categories) => {
+      res.status(200).send({ categories: categories });
     })
     .catch((err) => {
       next(err);
