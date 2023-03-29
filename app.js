@@ -8,6 +8,7 @@ const {
 const {
   getReviewById,
   getReviews,
+  getCommentsByReviewId,
 } = require(`${__dirname}/controllers/reviews.controller`);
 
 const {
@@ -23,9 +24,11 @@ app.get("/api", (req, res) => {
 
 app.get("/api/categories", getCategories);
 
+app.get("/api/reviews", getReviews);
+
 app.get("/api/reviews/:review_id", getReviewById);
 
-app.get("/api/reviews", getReviews);
+app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 
 app.get("/*", invalidPathError);
 

@@ -1,6 +1,7 @@
 const {
   fetchReviewById,
   fetchReviews,
+  fetchCommentsByReviewId,
 } = require(`${__dirname}/../models/reviews.model.js`);
 
 exports.getReviewById = (req, res, next) => {
@@ -19,6 +20,18 @@ exports.getReviews = (req, res, next) => {
   fetchReviews(sort_by, order)
     .then((reviews) => {
       res.status(200).send({ reviews: reviews });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getCommentsByReviewId = (req, res, next) => {
+  const { review_id } = req.params;
+  const { sort_by, order } = req.query;
+  fetchCommentsByReviewId(review_id, sort_by, order)
+    .then((comments) => {
+      res.status(200).send({ comments: comments });
     })
     .catch((err) => {
       next(err);
