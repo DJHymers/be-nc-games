@@ -67,14 +67,6 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("404: Should respond with invalid path error if input is invalid id number", () => {
-      return request(app)
-        .get("/api/reviews/212121221")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("404 path not found");
-        });
-    });
     it("400: invalid id type provided, should provide bad request message", () => {
       return request(app)
         .get("/api/reviews/bananas")
@@ -121,14 +113,6 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("404: Should respond with invalid path message if given invalid path input", () => {
-      return request(app)
-        .get("/api/bananagrams")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("404 path not found");
-        });
-    });
     it("200: GET /api/reviews should be sorted by date in descending order ", () => {
       return request(app)
         .get("/api/reviews?sort_by=created_at")
@@ -155,6 +139,16 @@ describe("nc_games_test", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid Query");
+        });
+    });
+  });
+  describe("404 Bad Path Errors", () => {
+    it("404: Should respond with invalid path error if input is invalid", () => {
+      return request(app)
+        .get("/api/reviews/212121221")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
         });
     });
   });
