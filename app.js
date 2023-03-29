@@ -1,10 +1,19 @@
 const express = require("express");
 const app = express();
+
 const {
   getCategories,
 } = require(`${__dirname}/controllers/categories.controller`);
+
+const {
+  getReviewById,
+} = require(`${__dirname}/controllers/reviews.controller`);
+
 const {
   invalidPathError,
+  customErrors,
+  handlePsqlErrors,
+  handleServerErrors,
 } = require(`${__dirname}/controllers/errorHandling.controller`);
 
 app.get("/api", (req, res) => {
@@ -13,6 +22,14 @@ app.get("/api", (req, res) => {
 
 app.get("/api/categories", getCategories);
 
+app.get("/api/reviews/:review_id", getReviewById);
+
 app.get("/*", invalidPathError);
+
+app.use(customErrors);
+
+app.use(handlePsqlErrors);
+
+app.use(handleServerErrors);
 
 module.exports = app;
