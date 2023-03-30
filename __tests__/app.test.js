@@ -36,14 +36,6 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("404: Should respond with invalid path message if given invalid path input", () => {
-      return request(app)
-        .get("/api/bananas")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("404 path not found");
-        });
-    });
   });
   describe("/api/reviews/:review_id", () => {
     it("200: GET /api/reviews/:review_id should return relevant review_id data", () => {
@@ -139,6 +131,89 @@ describe("nc_games_test", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid Query");
+        });
+    });
+  });
+  describe("/api/reviews/:review_id/comments", () => {
+    it("200: GET /api/reviews/:review_id/comments should return an array of comments", () => {
+      return request(app)
+        .get("/api/reviews/3/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments.length).toBe(3);
+          expect(comments).toBeInstanceOf(Array);
+          comments.forEach((comment) => {
+            expect(comment).toBeInstanceOf(Object);
+          });
+        });
+    });
+    it("200: GET /api/reviews/:review_id/comments should have an expected shape", () => {
+      return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toHaveLength(3);
+          comments.forEach((comment) => {
+            expect(comment).toHaveProperty("comment_id", expect.any(Number));
+            expect(comment).toHaveProperty("votes", expect.any(Number));
+            expect(comment).toHaveProperty("author", expect.any(String));
+            expect(comment).toHaveProperty("body", expect.any(String));
+            expect(comment.review_id).toBe(2);
+          });
+        });
+    });
+    it("200: GET /api/reviews/2/comments?sort_by=created_at should respond with comments sorted by most recent first", () => {
+      return request(app)
+        .get("/api/reviews/2/comments?sort_by=created_at")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
+    });
+    it("400: Should respond Invalid Query when any other sorts are attempted", () => {
+      return request(app)
+        .get("/api/reviews/3/comments?sort_by=body")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid Query");
+        });
+    });
+    it("400: should only accept asc/desc as order query", () => {
+      return request(app)
+        .get("/api/reviews/2/comments?order=hotdogs")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid Query");
+        });
+    });
+    it("400: invalid id type provided, should provide bad request message", () => {
+      return request(app)
+        .get("/api/reviews/bananas/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("404: non-existent id provided, should provide bad path message", () => {
+      return request(app)
+        .get("/api/reviews/1010101010101/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
+        });
+    });
+    it("200: GET /api/reviews/:review_id/comments if review_id returned has no comments, should inform the client", () => {
+      return request(app)
+        .get("/api/reviews/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toBe("User has not made any comments");
         });
     });
   });

@@ -31,3 +31,29 @@ exports.fetchReviews = (sort_by = "created_at", order = "desc") => {
       return result.rows;
     });
 };
+
+exports.fetchCommentsByReviewId = (
+  review_id,
+  sort_by = "created_at",
+  order = "desc"
+) => {
+  const allowedSorts = ["created_at"];
+
+  const allowedOrder = ["asc", "desc"];
+
+  if (!allowedSorts.includes(sort_by) || !allowedOrder.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Invalid Query" });
+  }
+
+  return db
+    .query(
+      `SELECT * FROM comments WHERE review_id = $1 ORDER BY ${sort_by} ${order};`,
+      [review_id]
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return "User has not made any comments";
+      }
+      return result.rows;
+    });
+};
