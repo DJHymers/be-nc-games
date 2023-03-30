@@ -164,7 +164,7 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("200: GET should respond with comments sorted by most recent first", () => {
+    it("200: GET /api/reviews/2/comments?sort_by=created_at should respond with comments sorted by most recent first", () => {
       return request(app)
         .get("/api/reviews/2/comments?sort_by=created_at")
         .expect(200)
@@ -189,6 +189,31 @@ describe("nc_games_test", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid Query");
+        });
+    });
+    it("400: invalid id type provided, should provide bad request message", () => {
+      return request(app)
+        .get("/api/reviews/bananas/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("400: non-existent id provided, should provide bad request message", () => {
+      return request(app)
+        .get("/api/reviews/1010101010101/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("200: GET /api/reviews/:review_id/comments if user has no comments should return a message", () => {
+      return request(app)
+        .get("/api/reviews/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const { comments } = body;
+          expect(comments).toEqual("User has not made any comments");
         });
     });
   });

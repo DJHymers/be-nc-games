@@ -51,6 +51,9 @@ exports.fetchCommentsByReviewId = (
       [review_id]
     )
     .then((result) => {
+      if (result.rows.length === 0) {
+        return "User has not made any comments";
+      }
       return result.rows;
     });
 };
