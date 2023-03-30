@@ -154,13 +154,13 @@ describe("nc_games_test", () => {
         .expect(200)
         .then(({ body }) => {
           const { comments } = body;
-          expect(comments.length).toBe(3);
+          expect(comments).toHaveLength(3);
           comments.forEach((comment) => {
             expect(comment).toHaveProperty("comment_id", expect.any(Number));
             expect(comment).toHaveProperty("votes", expect.any(Number));
             expect(comment).toHaveProperty("author", expect.any(String));
             expect(comment).toHaveProperty("body", expect.any(String));
-            expect(comment).toHaveProperty("review_id", expect.any(Number));
+            expect(comment.review_id).toBe(2);
           });
         });
     });
@@ -199,21 +199,21 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("400: non-existent id provided, should provide bad request message", () => {
+    it("404: non-existent id provided, should provide bad path message", () => {
       return request(app)
         .get("/api/reviews/1010101010101/comments")
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("404 path not found");
         });
     });
-    it("200: GET /api/reviews/:review_id/comments if user has no comments should return a message", () => {
+    it("200: GET /api/reviews/:review_id/comments if review_id returned has no comments, should inform the client", () => {
       return request(app)
         .get("/api/reviews/1/comments")
         .expect(200)
         .then(({ body }) => {
           const { comments } = body;
-          expect(comments).toEqual("User has not made any comments");
+          expect(comments).toBe("User has not made any comments");
         });
     });
   });
