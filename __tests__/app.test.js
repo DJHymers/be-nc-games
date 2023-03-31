@@ -127,7 +127,7 @@ describe("nc_games_test", () => {
     });
     it("400: GET should respond Invalid Query when any other sorts are attempted", () => {
       return request(app)
-        .get("/api/reviews?sort_by=votes")
+        .get("/api/reviews?sort_by=voters")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid Query");
@@ -139,6 +139,59 @@ describe("nc_games_test", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid Query");
+        });
+    });
+    it("200: GET should be able to sort with other valid categories", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=votes")
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews.length).toBe(13);
+          expect(reviews).toBeSortedBy("votes", { descending: true });
+        })
+        .then(() => {
+          return request(app)
+            .get("/api/reviews?sort_by=designer")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews.length).toBe(13);
+              expect(reviews).toBeSortedBy("designer", { descending: true });
+            });
+        })
+        .then(() => {
+          return request(app)
+            .get("/api/reviews?sort_by=category")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews.length).toBe(13);
+              expect(reviews).toBeSortedBy("category", { descending: true });
+            });
+        })
+        .then(() => {
+          return request(app)
+            .get("/api/reviews?sort_by=owner")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              expect(reviews.length).toBe(13);
+              expect(reviews).toBeSortedBy("owner", { descending: true });
+            });
+        });
+    });
+    it("200: GET should select reviews by category value and return results", () => {
+      return request(app)
+        .get("/api/reviews")
+        .send({ category: "social deduction" })
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews.length).toBe(11);
+          reviews.forEach((review) => {
+            expect(review.category).toBe("social deduction");
+          });
         });
     });
   });
