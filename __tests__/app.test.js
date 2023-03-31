@@ -217,6 +217,82 @@ describe("nc_games_test", () => {
         });
     });
   });
+  describe("/api/reviews/:review_id/comments to post", () => {
+    it("201: POST /api/reviews/:review_id/comments should return a new comment", () => {
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send({
+          username: "mallionaire",
+          body: "I love hosting",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          const { comment } = body;
+          expect(comment).toMatchObject({
+            review_id: expect.any(Number),
+            author: expect.any(String),
+            body: expect.any(String),
+            comment_id: expect.any(Number),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          });
+        });
+    });
+    it("400: malformed body/ missing required fields should return err message", () => {
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("400: failing schema validation", () => {
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send({ username: 123, body: 654 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("400: invalid id type provided, should provide bad request message", () => {
+      return request(app)
+        .post("/api/reviews/bananas/comments")
+        .send({
+          username: "mallionaire",
+          body: "I love hosting",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("404: non-existent id provided, should provide bad path message", () => {
+      return request(app)
+        .post("/api/reviews/1010101010101/comments")
+        .send({
+          username: "mallionaire",
+          body: "I love hosting",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
+        });
+    });
+    it("404: invalid username provided, should provide bad path message", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          username: "newReqWhoDis",
+          body: "I am not hosting",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
+        });
+    });
+  });
   describe("404 Bad Path Errors", () => {
     it("404: Should respond with invalid path error if input is invalid", () => {
       return request(app)
