@@ -303,4 +303,62 @@ describe("nc_games_test", () => {
         });
     });
   });
+  describe("/api/reviews/:review_id Patch", () => {
+    it("200: PATCH /api/reviews/:review_id should update votes by specified amount and return updated object.", () => {
+      return request(app)
+        .patch("/api/reviews/3")
+        .send({
+          inc_votes: 6,
+        })
+        .expect(200)
+        .then(({ body }) => {
+          const { reviews } = body;
+          expect(reviews).toMatchObject({
+            title: "Ultimate Werewolf",
+            designer: "Akihisa Okui",
+            owner: "bainesface",
+            review_img_url:
+              "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+            review_body: "We couldn't find the werewolf!",
+            category: "social deduction",
+            votes: 11,
+          });
+        });
+    });
+    it("400: invalid id type provided, should provide bad request message", () => {
+      return request(app)
+        .patch("/api/reviews/bananas")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("400: malformed body / missing required fields should return err message", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("400: failing schema validation", () => {
+      return request(app)
+        .patch("/api/reviews/3")
+        .send({ inc_votes: "hello" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    it("404: Should respond with invalid path error if input is invalid", () => {
+      return request(app)
+        .patch("/api/reviews/212121221")
+        .send({ inc_votes: 5 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
+        });
+    });
+  });
 });

@@ -71,3 +71,19 @@ exports.insertCommentByReviewId = (review_id, username, body) => {
       return rows[0];
     });
 };
+
+exports.updateVoteByReviewId = (review_id, updatedVote) => {
+  if (isNaN(updatedVote) || updatedVote === undefined) {
+    return Promise.reject({ status: 400, msg: "Invalid input" });
+  }
+  return db
+    .query(
+      `UPDATE reviews SET votes = votes + ${updatedVote} WHERE review_id = ${review_id} RETURNING *`
+    )
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "404 path not found" });
+      }
+      return result.rows[0];
+    });
+};
