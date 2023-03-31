@@ -363,7 +363,12 @@ describe("nc_games_test", () => {
   });
   describe("/api/comments/:comment_id", () => {
     it("204: DELETE /api/comments/:comment_id", () => {
-      return request(app).delete("/api/comments/5").expect(204);
+      return request(app)
+        .delete("/api/comments/5")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toMatchObject({});
+        });
     });
     it("404: DELETE should return a 404 response if the comment id is not found", () => {
       return request(app)
