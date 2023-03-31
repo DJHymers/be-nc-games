@@ -67,6 +67,14 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
+    it("404: Should respond with invalid path error if input is invalid", () => {
+      return request(app)
+        .get("/api/reviews/212121221")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
+        });
+    });
   });
   describe("/api/reviews", () => {
     it("200: GET /api/reviews should return array of objects.", () => {
@@ -117,7 +125,7 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("400: Should respond Invalid Query when any other sorts are attempted", () => {
+    it("400: GET should respond Invalid Query when any other sorts are attempted", () => {
       return request(app)
         .get("/api/reviews?sort_by=votes")
         .expect(400)
@@ -125,7 +133,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid Query");
         });
     });
-    it("400: should only accept asc/desc as order query", () => {
+    it("400: GET should only accept asc/desc as order query", () => {
       return request(app)
         .get("/api/reviews?order=sausages")
         .expect(400)
@@ -175,7 +183,7 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("400: Should respond Invalid Query when any other sorts are attempted", () => {
+    it("400: GET should respond Invalid Query when any other sorts are attempted", () => {
       return request(app)
         .get("/api/reviews/3/comments?sort_by=body")
         .expect(400)
@@ -183,7 +191,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid Query");
         });
     });
-    it("400: should only accept asc/desc as order query", () => {
+    it("400: GET should only accept asc/desc as order query", () => {
       return request(app)
         .get("/api/reviews/2/comments?order=hotdogs")
         .expect(400)
@@ -191,7 +199,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid Query");
         });
     });
-    it("400: invalid id type provided, should provide bad request message", () => {
+    it("400: GET invalid id type provided, should provide bad request message", () => {
       return request(app)
         .get("/api/reviews/bananas/comments")
         .expect(400)
@@ -199,7 +207,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("404: non-existent id provided, should provide bad path message", () => {
+    it("404: GET non-existent id provided, should provide bad path message", () => {
       return request(app)
         .get("/api/reviews/1010101010101/comments")
         .expect(404)
@@ -238,7 +246,7 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("400: malformed body/ missing required fields should return err message", () => {
+    it("400: POST malformed body/ missing required fields should return err message", () => {
       return request(app)
         .post("/api/reviews/3/comments")
         .send({})
@@ -247,7 +255,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("400: failing schema validation", () => {
+    it("400: POST failing schema validation", () => {
       return request(app)
         .post("/api/reviews/3/comments")
         .send({ username: 123, body: 654 })
@@ -256,7 +264,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("400: invalid id type provided, should provide bad request message", () => {
+    it("400: POST invalid id type provided, should provide bad request message", () => {
       return request(app)
         .post("/api/reviews/bananas/comments")
         .send({
@@ -268,7 +276,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("404: non-existent id provided, should provide bad path message", () => {
+    it("404: POST non-existent id provided, should provide bad path message", () => {
       return request(app)
         .post("/api/reviews/1010101010101/comments")
         .send({
@@ -280,23 +288,13 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("404 path not found");
         });
     });
-    it("404: invalid username provided, should provide bad path message", () => {
+    it("404: POST invalid username provided, should provide bad path message", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
           username: "newReqWhoDis",
           body: "I am not hosting",
         })
-        .expect(404)
-        .then(({ body }) => {
-          expect(body.msg).toBe("404 path not found");
-        });
-    });
-  });
-  describe("404 Bad Path Errors", () => {
-    it("404: Should respond with invalid path error if input is invalid", () => {
-      return request(app)
-        .get("/api/reviews/212121221")
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("404 path not found");
@@ -325,7 +323,7 @@ describe("nc_games_test", () => {
           });
         });
     });
-    it("400: invalid id type provided, should provide bad request message", () => {
+    it("400: PATCH invalid id type provided, should provide bad request message", () => {
       return request(app)
         .patch("/api/reviews/bananas")
         .expect(400)
@@ -333,7 +331,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("400: malformed body / missing required fields should return err message", () => {
+    it("400: PATCH malformed body / missing required fields should return err message", () => {
       return request(app)
         .patch("/api/reviews/1")
         .send({})
@@ -342,7 +340,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("400: failing schema validation", () => {
+    it("400: PATCH failing schema validation", () => {
       return request(app)
         .patch("/api/reviews/3")
         .send({ inc_votes: "hello" })
@@ -351,7 +349,7 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    it("404: Should respond with invalid path error if input is invalid", () => {
+    it("404: PATCH should respond with invalid path error if input is invalid", () => {
       return request(app)
         .patch("/api/reviews/212121221")
         .send({ inc_votes: 5 })
@@ -384,6 +382,43 @@ describe("nc_games_test", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid input");
+        });
+    });
+  });
+  describe("/api/users", () => {
+    it("200: GET /api/users should respond with array of user objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          const { users } = body;
+          expect(users).toBeInstanceOf(Array);
+          users.forEach((user) => {
+            expect(user).toBeInstanceOf(Object);
+          });
+        });
+    });
+    it("200: GET /api/users should have expected shape", () => {
+      return request(app)
+        .get("/api/users")
+        .then(({ body }) => {
+          const { users } = body;
+          expect(users.length).toBe(4);
+          users.forEach((user) => {
+            expect(user).toHaveProperty("username", expect.any(String));
+            expect(user).toHaveProperty("name", expect.any(String));
+            expect(user).toHaveProperty("avatar_url", expect.any(String));
+          });
+        });
+    });
+  });
+  describe("404 Bad Path Errors", () => {
+    it("404: should respond with invalid path error if input is invalid ", () => {
+      return request(app)
+        .get("/api/nothing")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
         });
     });
   });
