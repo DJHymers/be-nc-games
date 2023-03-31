@@ -20,6 +20,10 @@ const {
   handleServerErrors,
 } = require(`${__dirname}/controllers/errorHandling.controller`);
 
+const {
+  deleteCommentByCommentId,
+} = require(`${__dirname}/controllers/comments.controller`);
+
 app.get("/api", (req, res) => {
   res.status(200).send({ msg: "All good!" });
 });
@@ -35,6 +39,8 @@ app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.post("/api/reviews/:review_id/comments", postCommentByReviewId);
 
 app.patch("/api/reviews/:review_id", patchVotesByReviewId);
+
+app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 
 app.get("/*", invalidPathError);
 

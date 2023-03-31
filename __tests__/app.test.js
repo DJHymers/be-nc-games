@@ -361,4 +361,25 @@ describe("nc_games_test", () => {
         });
     });
   });
+  describe("/api/comments/:comment_id", () => {
+    it("204: DELETE /api/comments/:comment_id", () => {
+      return request(app).delete("/api/comments/5").expect(204);
+    });
+    it("404: DELETE should return a 404 response if the comment id is not found", () => {
+      return request(app)
+        .delete("/api/comments/99999999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404 path not found");
+        });
+    });
+    it("400: DELETE should return a 400 response if a valid integer id is not provided", () => {
+      return request(app)
+        .delete("/api/comments/xyz")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+  });
 });
