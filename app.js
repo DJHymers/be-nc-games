@@ -24,6 +24,8 @@ const {
   deleteCommentByCommentId,
 } = require(`${__dirname}/controllers/comments.controller`);
 
+const { getUsers } = require(`${__dirname}/controllers/users.controller`);
+
 app.get("/api", (req, res) => {
   res.status(200).send({ msg: "All good!" });
 });
@@ -41,6 +43,8 @@ app.post("/api/reviews/:review_id/comments", postCommentByReviewId);
 app.patch("/api/reviews/:review_id", patchVotesByReviewId);
 
 app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
+
+app.get("/api/users", getUsers);
 
 app.get("/*", invalidPathError);
 
