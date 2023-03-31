@@ -280,16 +280,16 @@ describe("nc_games_test", () => {
           expect(body.msg).toBe("404 path not found");
         });
     });
-    it("400: invalid username provided, should provide bad path message", () => {
+    it("404: invalid username provided, should provide bad path message", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
           username: "newReqWhoDis",
           body: "I am not hosting",
         })
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("404 path not found");
         });
     });
   });

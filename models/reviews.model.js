@@ -59,6 +59,9 @@ exports.fetchCommentsByReviewId = (
 };
 
 exports.insertCommentByReviewId = (review_id, username, body) => {
+  if (!isNaN(username) || username === undefined) {
+    return Promise.reject({ status: 400, msg: "Invalid input" });
+  }
   return db
     .query(
       `INSERT INTO comments (review_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
