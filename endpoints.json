@@ -20,15 +20,108 @@
     "exampleResponse": {
       "reviews": [
         {
+          "review_id": 13,
+          "title": "Kerplunk; Don't lose your marbles",
+          "category": "dexterity",
+          "designer": "Avery Wunzboogerz",
+          "owner": "tickle122",
+          "review_body": "Don't underestimate the tension and supsense that can be brought on with a round of Kerplunk! You'll feel the rush and thrill of not disturbing the stack of marbles, and probably utter curse words when you draw the wrong straw. Fanily friendly, and not just for kids! ",
+          "review_img_url": "https://images.pexels.com/photos/411207/pexels-photo-411207.jpeg?w=700&h=700",
+          "created_at": "2021-01-25T11:16:54.963Z",
+          "votes": 9,
+          "comment_count": "3"
+        }
+      ]
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "cooljmessy",
+          "name": "Peter Messy",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/1/1a/MR_MESSY_4A.jpg/revision/latest/scale-to-width-down/250?cb=20170730171002"
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review_id": {
+    "description": "serves a single review by id number",
+    "queries": [],
+    "exampleResponse": {
+      "reviews": [
+        {
+          "review_id": 4,
           "title": "One Night Ultimate Werewolf",
+          "category": "hidden-roles",
           "designer": "Akihisa Okui",
           "owner": "happyamy2016",
-          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-          "category": "hidden-roles",
-          "created_at": 1610964101251,
+          "review_body": "We couldn't find the werewolf!",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+          "created_at": "2021-01-18T10:01:41.251Z",
           "votes": 5
         }
       ]
+    }
+  },
+  "PATCH /api/reviews/:review_id": {
+    "description": "Updates the votes property on the review card returning the review card with the updated vote count.",
+    "queries": ["review_id", "updatedVote"],
+    "exampleResponse": {
+      "reviews": [
+        {
+          "review_id": 4,
+          "title": "One Night Ultimate Werewolf",
+          "category": "hidden-roles",
+          "designer": "Akihisa Okui",
+          "owner": "happyamy2016",
+          "review_body": "We couldn't find the werewolf!",
+          "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?w=700&h=700",
+          "created_at": "2021-01-18T10:01:41.251Z",
+          "votes": 11
+        }
+      ]
+    }
+  },
+  "GET /api/reviews/:review_id/comments": {
+    "description": "serves all comments made by a single review id number",
+    "queries": ["review_id", "sort_by", "order"],
+    "exampleResponse": {
+      "reviews": [
+        {
+          "comment_id": 11,
+          "body": "Commodo aliquip sunt commodo elit in esse velit laborum cupidatat anim.",
+          "review_id": 4,
+          "author": "happyamy2016",
+          "votes": 10,
+          "created_at": "2021-03-27T14:15:21.110Z"
+        }
+      ]
+    }
+  },
+  "POST /api/reviews/:review_id/comments": {
+    "description": "Posts a comment made by the review_id and returns the posted comment.",
+    "queries": ["review_id", "username", "body"],
+    "exampleResponse": {
+      "reviews": [
+        {
+          "comment_id": 10,
+          "body": "Ex id ipsum dolore non cillum anim sint duis nisi anim deserunt nisi minim.",
+          "review_id": 2,
+          "author": "grumpy19",
+          "votes": 9,
+          "created_at": "2021-03-27T14:15:31.110Z"
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes the given comment by comment_id",
+    "queries": ["comment_id"],
+    "exampleResponse": {
+      "comments": ["status 204, no content"]
     }
   }
 }
