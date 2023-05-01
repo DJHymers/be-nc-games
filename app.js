@@ -29,8 +29,10 @@ const {
 
 const { getUsers } = require(`${__dirname}/controllers/users.controller`);
 
+const endpoints = require("./endpoints.json");
+
 app.get("/api", (req, res) => {
-  res.status(200).send({ msg: "All good!" });
+  res.status(200).send(endpoints);
 });
 
 app.get("/api/categories", getCategories);
